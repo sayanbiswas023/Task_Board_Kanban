@@ -3,7 +3,7 @@ body {
     background-color: #000; /* Set the initial background color (night) */
     margin: 0;
     padding: 0;
-    overflow: hidden; /* Hide overflow to prevent horizontal scrolling */
+    /* overflow: hidden; Hide overflow to prevent horizontal scrolling */
     position: relative; /* Create a positioning context for absolute elements */
     animation: dayNight 15s infinite alternate; /* Apply animation */
 }
