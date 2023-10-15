@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import usersData from './users.json';
+import AddTaskForm from './AddTaskForm';
+import TicketCard from './TicketCard';
 
 function TicketBoard() {
-  const [tickets, setTickets] = useState([]);
+  const [tasks, setTasks] = useState([]); // Updated state to manage tasks
   const [groupBy, setGroupBy] = useState('status'); // Default grouping by status
   const [sortBy, setSortBy] = useState('title'); // Default sorting by title
 
@@ -24,7 +26,6 @@ function TicketBoard() {
     };
 
     return `${prio[priority]}` || "Unknown Priority";
-    // return `${prio[priority]} (${priority})` || "Unknown Priority";
   }
 
   useEffect(() => {
@@ -37,7 +38,7 @@ function TicketBoard() {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        setTickets(data.tickets);
+        setTasks(data.tickets);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -46,30 +47,30 @@ function TicketBoard() {
     fetchData();
   }, []);
 
-  function groupTickets(tickets, groupBy) {
-    // Implement logic to group tickets by the chosen criterion (status, user, or priority)
+  function groupTasks(tasks, groupBy) {
+    // Implement logic to group tasks by the chosen criterion (status, user, or priority)
     const grouped = {};
-    tickets.forEach((ticket) => {
-      const key = ticket[groupBy];
+    tasks.forEach((task) => {
+      const key = task[groupBy];
       if (!grouped[key]) {
         grouped[key] = [];
       }
-      grouped[key].push(ticket);
+      grouped[key].push(task);
     });
 
     const groups = [];
     for (const key in grouped) {
-      groups.push({ key, tickets: grouped[key] });
+      groups.push({ key, tasks: grouped[key] });
     }
 
     return groups;
   }
 
-  function sortGroupedTickets(groups, sortBy) {
+  function sortGroupedTasks(groups, sortBy) {
     // Implement logic to sort the groups based on the chosen criterion (priority, user, or status)
     return groups.map((group) => ({
       ...group,
-      tickets: group.tickets.slice().sort((a, b) => {
+      tasks: group.tasks.slice().sort((a, b) => {
         if (sortBy === 'title') {
           return a.title.localeCompare(b.title);
         } else if (sortBy === 'priority') {
@@ -89,13 +90,22 @@ function TicketBoard() {
     } else if (groupBy === 'priority') {
       return getPriorityStatus(groupKey);
     }
-    return groupKey; 
+    return groupKey;
   }
 
+  const groupedTasks = groupTasks(tasks, groupBy); // Updated to use tasks
+  const sortedGroupedTasks = sortGroupedTasks(groupedTasks, sortBy); // Updated to use tasks
 
-  const groupedTickets = groupTickets(tickets, groupBy);
-  const sortedGroupedTickets = sortGroupedTickets(groupedTickets, sortBy);
+  const addTask = (newTask) => {
+    setTasks([...tasks, newTask]);
+  };
 
+  const deleteTask = (taskId) => {
+    const updatedTasks = tasks.filter((task) => task.id !== taskId);
+    setTasks(updatedTasks);
+  };
+  
+  
   return (
     <div className="TicketBoard">
       <header>
@@ -106,24 +116,18 @@ function TicketBoard() {
           <button onClick={() => setGroupBy('priority')}>Group by Priority</button>
         </div>
       </header>
-      {sortedGroupedTickets.map((group) => (
+      <AddTaskForm onAddTask={addTask} /> {/* Render the AddTaskForm component */}
+      {sortedGroupedTasks.map((group) => (
         <div className="TicketColumn" key={group.key}>
-          {/* <h2>{groupBy === 'user' ? `${getUserDisplayName(group.key)} (${group.key})` : group.key}</h2> */}
           <h2>{getColumnHeading(groupBy, group.key)}</h2>
-          {/* <h2>{groupBy === 'user' ? getUserDisplayName(group.key) : getPriorityStatus(group.key)}</h2> */}
-          {/* <h2>{groupBy === 'user' ? getUserDisplayName(group.key) : group.key}</h2>
-          <h2>{groupBy === 'priority' ? getPriorityStatus(group.key) : group.key}</h2> */}
-          {group.tickets.map((ticket) => (
-            <div className="TicketCard" key={ticket.id}>
-              <h3>{ticket.title}</h3>
-              <p>Status: {ticket.status}</p>
-              {groupBy === 'user' ? (
-                <p>Assigned To: {getUserDisplayName(ticket.userId)}</p>
-              ) : (
-                <p>Assigned To: {getUserDisplayName(ticket.userId)}</p>
-              )}
-              <p>Priority: {getPriorityStatus(ticket.priority)}</p>
-            </div>
+          {group.tasks.map((task) => (
+            <div className="TicketCard" key={task.id}>
+            <TicketCard task={task} onDelete={deleteTask} />
+            {/* <h3>{task.title}</h3>
+            <p>Status: {task.status}</p>
+            <p>Assigned To: {getUserDisplayName(task.userId)}</p>
+            <p>Priority: {getPriorityStatus(task.priority)}</p> */}
+          </div>
           ))}
         </div>
       ))}

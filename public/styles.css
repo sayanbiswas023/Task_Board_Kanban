@@ -8,39 +8,6 @@ body {
     animation: dayNight 15s infinite alternate; /* Apply animation */
 }
 
-.desert-background {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    animation: dayNight 15s linear infinite;
-    z-index: -1; /* Place it behind other elements */
-    background: url('/desert.jfif') center/cover no-repeat; /* Use your desert image from the public folder */
-}
-
-.sun {
-    width: 150px; /* Adjust size as needed */
-    height: 150px;
-    background: url('/sun.png') center/contain no-repeat; /* Use your sun image from the public folder */
-    position: absolute;
-    top: 20%;
-    left: -10%;
-    animation: sunAnimation 7.5s linear infinite alternate;
-    z-index: 1; /* Place it in front of the desert background */
-}
-
-.moon {
-    width: 150px; /* Adjust size as needed */
-    height: 150px;
-    background: url('/moon.png') center/contain no-repeat; /* Use your moon image from the public folder */
-    position: absolute;
-    top: 20%;
-    left: 100%;
-    animation: moonAnimation 7.5s linear infinite alternate;
-    z-index: 1; /* Place it in front of the desert background */
-}
-
 @keyframes dayNight {
     0%, 100% {
         background: url('/desert-night.jfif') center/cover no-repeat; /* Night background */
@@ -49,26 +16,6 @@ body {
     50% {
         background: url('/desert-day.jfif') center/cover no-repeat; /* Day background */
         /* background-size: 100% 90%; Stretch to cover the entire screen */
-    }
-}
-
-
-
-@keyframes sunAnimation {
-    0% {
-        transform: translate(-10%, -50%);
-    }
-    100% {
-        transform: translate(110%, -50%);
-    }
-}
-
-@keyframes moonAnimation {
-    0% {
-        transform: translate(110%, -50%);
-    }
-    100% {
-        transform: translate(-10%, -50%);
     }
 }
 
@@ -101,4 +48,50 @@ body {
     padding: 10px;
     margin: 5px 0;
     border-radius: 5px;
+}
+
+
+.AddTaskForm {
+background: #f9f9f9;
+border: 1px solid #ddd;
+padding: 20px;
+border-radius: 5px;
+box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+margin-bottom: 20px;
+max-height: 400px;
+max-width: 200px;
+min-height: 400px;
+min-width: 200px;
+/* overflow-y: auto; */
+}
+
+.AddTaskForm h2 {
+font-size: 20px;
+margin-bottom: 10px;
+}
+
+.AddTaskForm form {
+display: grid;
+gap: 10px;
+}
+
+.AddTaskForm label {
+font-weight: bold;
+}
+
+.AddTaskForm input,
+.AddTaskForm select {
+width: 100%;
+padding: 10px;
+border: 1px solid #ddd;
+border-radius: 5px;
+}
+
+.AddTaskForm button {
+background: #007BFF;
+color: white;
+border: none;
+border-radius: 5px;
+padding: 10px 20px;
+cursor: pointer;
 }
